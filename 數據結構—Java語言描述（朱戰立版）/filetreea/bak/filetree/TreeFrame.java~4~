@@ -1,0 +1,80 @@
+package filetree;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import java.io.*;
+
+public class TreeFrame extends JFrame {
+  private JPanel contentPane;
+  private BorderLayout borderLayout1 = new BorderLayout();
+  private JScrollPane jScrollPane1 = new JScrollPane();
+  private JButton jButton2 = new JButton();
+  private JTree jTree1 = new JTree();
+
+  //Construct the frame
+  public TreeFrame() {
+    enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+    try {
+      jbInit();
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+  //Component initialization
+  private void jbInit() throws Exception  {
+    //setIconImage(Toolkit.getDefaultToolkit().createImage(TreeFrame.class.getResource("[Your Icon]")));
+    contentPane = (JPanel) this.getContentPane();
+    jButton2.setText("jButton2");
+    contentPane.setLayout(borderLayout1);
+    this.setSize(new Dimension(525, 469));
+    this.setTitle("Frame Title");
+    contentPane.add(jScrollPane1, BorderLayout.CENTER);
+    jScrollPane1.getViewport().add(jTree1, null);
+    this.setVisible(true) ;
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
+  }
+  //Overridden so we can exit when window is closed
+  protected void processWindowEvent(WindowEvent e) {
+    super.processWindowEvent(e);
+    if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+      System.exit(0);
+    }
+  }
+  void initTree(String dir){
+
+  }
+  class FileTreeNode extends DefaultMutableTreeNode{
+    boolean isAdded;
+    public  FileTreeNode(File file){
+      super(file);
+      isAdded=false;
+    }
+    public boolean readTree(){
+      return readTree(false);
+    }
+    public boolean readTree(boolean b){
+      if (isAdded) return false;
+      String list[]=getFileObject().list();
+      if(list!=null){
+        for(int i=0;i<list.length;i++){
+          FileTreeNode subnode=new FileTreeNode(new File(getFileObject(),list[i]));
+          add(subnode);
+          if(b){
+            subnode.readTree(b);
+
+          }
+        }
+    }
+    isAdded=true;
+    return true;
+    }
+    public File getFileObject(){
+      return (File)getUserObject();
+    }
+
+  }
+}
+
